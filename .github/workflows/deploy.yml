@@ -15,36 +15,37 @@ jobs:
 
     - name: Set up Docker to use Minikube's environment
       run: |
-        eval $(minikube docker-env)
+        timeout 40s bash -c "eval $(minikube docker-env)"
       continue-on-error: true
 
     - name: Build Backend Docker image
       run: |
-        docker build -t your-dockerhub-username/findadoctor-backend:latest ./FindaDoctor-BE-main
+        timeout 40s docker build -t your-dockerhub-username/findadoctor-backend:latest ./FindaDoctor-BE-main
       continue-on-error: true
 
     - name: Build Frontend Docker image
       run: |
-        docker build -t your-dockerhub-username/findadoctor-frontend:latest ./FindaDoctor-FE-main
+        timeout 40s docker build -t your-dockerhub-username/findadoctor-frontend:latest ./FindaDoctor-FE-main
       continue-on-error: true
 
     - name: Login to Docker Hub
-      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+      run: |
+        timeout 40s echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
       continue-on-error: true
 
     - name: Push Docker images
       run: |
-        docker push your-dockerhub-username/findadoctor-backend:latest
-        docker push your-dockerhub-username/findadoctor-frontend:latest
+        timeout 40s docker push your-dockerhub-username/findadoctor-backend:latest
+        timeout 40s docker push your-dockerhub-username/findadoctor-frontend:latest
       continue-on-error: true
 
     - name: Deploy to Minikube
       run: |
-        kubectl apply -f k8s/namespace.yaml
-        kubectl apply -f k8s/configmap.yaml
-        kubectl apply -f k8s/secret.yaml
-        kubectl apply -f k8s/backend-deployment.yaml
-        kubectl apply -f k8s/backend-service.yaml
-        kubectl apply -f k8s/frontend-deployment.yaml
-        kubectl apply -f k8s/frontend-service.yaml
+        timeout 40s kubectl apply -f k8s/namespace.yaml
+        timeout 40s kubectl apply -f k8s/configmap.yaml
+        timeout 40s kubectl apply -f k8s/secret.yaml
+        timeout 40s kubectl apply -f k8s/backend-deployment.yaml
+        timeout 40s kubectl apply -f k8s/backend-service.yaml
+        timeout 40s kubectl apply -f k8s/frontend-deployment.yaml
+        timeout 40s kubectl apply -f k8s/frontend-service.yaml
       continue-on-error: true

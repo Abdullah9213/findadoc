@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: findadoctor-backend-service
+  namespace: findadoctor
+spec:
+  type: ClusterIP
+  selector:
+    app: findadoctor-backend
+  ports:
+    - port: 5000
+      targetPort: 5000

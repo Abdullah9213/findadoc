@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: findadoctor-frontend-service
+  namespace: findadoctor
+spec:
+  type: NodePort
+  selector:
+    app: findadoctor-frontend
+  ports:
+    - port: 80
+      targetPort: 3000
+      nodePort: 30002
